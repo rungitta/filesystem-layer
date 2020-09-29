@@ -35,12 +35,13 @@ jobs:
           targets: "./prepare-client-packages.yml"
           hosts: "localhost"
 
-      #- name: Build RPM package
-      #  id: build-rpm
-      #  uses: bpicode/github-action-fpm@master
-      #  with:
-      #    fpm_args: "./package/"
-      #    fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t rpm -a all -s dir"
+      - name: Build RPM package
+        id: build-rpm
+        uses: bpicode/github-action-fpm@master
+        #uses: ./.github/actions/fpm
+        with:
+          fpm_args: "./package/"
+          fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t rpm -a all -s dir"
 
         #uses: kentik/pkg@v1.0.0-rc6
         #with:
@@ -53,6 +54,7 @@ jobs:
       - name: Build Deb package
         id: build-deb
         uses: bpicode/github-action-fpm@master
+        #uses: ./.github/actions/fpm
         with:
           fpm_args: "./package/"
           fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t deb -a all -s dir"
@@ -65,17 +67,28 @@ jobs:
         #  format: deb
         #  package: package/client_packages_metadata.yaml
 
+      - name: Find filenames of downloaded packages
+        id: find_filenames
+        shell: bash
+        run: |
+          rpmfile="$(ls -1 *.rpm)"
+          debfile="$(ls -1 *.deb)"
+          echo ::set-output name=rpmfile::${rpmfile}
+          echo ::set-output name=debfile::${debfile}
+
       - name: Upload Deb package as artifact
         uses: actions/upload-artifact@v2
         with:
           name: Deb package
-          path: ${{ steps.build-deb.outputs.package }}
+          #path: ${{ steps.build-deb.outputs.package }}
+          path: ${{ steps.find_filenames.outputs.debfile }}
 
       - name: Upload RPM package as artifact
         uses: actions/upload-artifact@v2
         with:
           name: RPM package
-          path: ${{ steps.build-rpm.outputs.package }}
+          #path: ${{ steps.build-rpm.outputs.package }}
+          path: ${{ steps.find_filenames.outputs.rpmfile }}
 
   release:
     needs: build-packages
