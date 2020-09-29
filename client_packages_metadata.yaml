@@ -1,0 +1,18 @@
+meta:
+  description: CVMFS config repository package for EESSI.
+  vendor: EESSI
+  maintainer: Bob Dröge <b.e.droge@rug.nl>
+files:
+  "/etc/cvmfs/config.d/cvmfs-config.eessi-hpc.org.conf":
+    file: "etc/cvmfs/config.d/cvmfs-config.eessi-hpc.org.conf"
+    mode: "0755"
+    user: "root"
+  "/etc/cvmfs/keys/eessi-hpc.org/cvmfs-config.eessi-hpc.org.pub":
+    file: "etc/cvmfs/keys/eessi-hpc.org/cvmfs-config.eessi-hpc.org.pub"
+    mode: "0755"
+    user: "root"
+  "/etc/cvmfs/default.d/80-eessi-cvmfs.conf":
+    file: "etc/cvmfs/default.d/80-eessi-cvmfs.conf"
+    mode: "0755"
+    user: "root"
+#user: foo

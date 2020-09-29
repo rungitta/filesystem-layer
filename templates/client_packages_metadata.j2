@@ -1,0 +1,12 @@
+meta:
+  description: {{ package_description }}
+  vendor: {{ package_vendor }}
+  maintainer: {{ package_maintainer }}
+files:
+{% for file in pkg_files.files %}
+  "{{ file.path | regex_replace(package_source_dir) }}":
+    file: "{{ file.path | regex_replace(package_source_dir + '/') }}"
+    #mode: "0755"
+    user: "root"
+{% endfor %}
+#user: foo
