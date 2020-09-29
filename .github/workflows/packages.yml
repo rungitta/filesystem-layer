@@ -30,12 +30,6 @@ jobs:
     - name: Debug
       run: ls -lR ${{ github.workspace }}
 
-    - name: Debug
-      run: ls -l ${{ github.workspace }}/package/client_packages_metadata.yaml
-
-    - name: Debug
-      run: ls -l ${GITHUB_WORKSPACE}/package/client_packages_metadata.yaml
-
     - name: Build RPM package
       uses: kentik/pkg@v1.0.0-rc6
       with:
