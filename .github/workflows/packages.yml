@@ -50,7 +50,7 @@ jobs:
       with:
         name: Deb package
         #path: ${{ github.workspace }}/build/*.deb
-        path: *.deb
+        path: "*.deb"
 
     - name: upload rpm package as artifact
       uses: actions/upload-artifact@v2
