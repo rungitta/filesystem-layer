@@ -6,7 +6,7 @@
     package_vendor: EESSI
     package_maintainer: EESSI <eessi@list.rug.nl>
     package_description: CVMFS config repository package for EESSI.
-    package_source_dir: "{{ lookup('env', 'GITHUB_WORKSPACE') | default('/tmp', True) }}"
+    package_source_dir: "{{ lookup('env', 'GITHUB_WORKSPACE') | default('/tmp', True) }}/package"
   tasks:
     - name: Create directory structure for the CVMFS config
       file:
