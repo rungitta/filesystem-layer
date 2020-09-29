@@ -37,7 +37,7 @@ jobs:
         package: package.yaml
 
     - name: Build DEB package
-      uses: kentik/pkg@v1
+      uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
         version: 0.1
