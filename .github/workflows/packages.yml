@@ -34,7 +34,7 @@ jobs:
         version: 0.1
         arch: x86_64
         format: rpm
-        package: "{{ github_workspace }}/package/client_packages_metadata.yaml"
+        package: ${{ github_workspace }}/package/client_packages_metadata.yaml
 
     - name: Build DEB package
       uses: kentik/pkg@v1.0.0-rc6
@@ -43,13 +43,14 @@ jobs:
         version: 0.1
         arch: x86_64
         format: deb
-        package: "{{ github_workspace }}/package/client_packages_metadata.yaml"
+        package: ${{ github_workspace }}/package/client_packages_metadata.yaml
 
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: Deb package
-        path: ${{ github.workspace }}/build/*.deb
+        #path: ${{ github.workspace }}/build/*.deb
+        path: *.deb
 
     - name: upload rpm package as artifact
       uses: actions/upload-artifact@v2
