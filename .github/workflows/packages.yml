@@ -77,6 +77,15 @@ jobs:
         with:
           name: RPM package
 
+      - name: Find package filenames
+        id: find_filenames
+        shell: bash
+        run: |
+          rpmfile="$(ls -1 *.rpm)"
+          debfile="$(ls -1 *.deb)"
+          echo ::set-output name=rpmfile::${rpmfile}
+          echo ::set-output name=debfile::${debfile}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -95,7 +104,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: *.rpm
+          asset_path: ${{ steps.find_filenames.outputs.rpmfile }}
           #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
           asset_content_type: application/x-rpm
 
@@ -106,7 +115,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: *.deb
+          asset_path: {{ steps.find_filenames.outputs.debfile }}
           #${{ steps.build-deb.outputs.package }}
           #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
           asset_content_type: application/x-debian-package
