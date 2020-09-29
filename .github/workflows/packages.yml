@@ -43,7 +43,7 @@ jobs:
         version: 0.1
         arch: x86_64
         format: deb
-        package: "{{ github_workspace }}/package.yaml"
+        package: "{{ github_workspace }}/package/client_packages_metadata.yaml"
 
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2

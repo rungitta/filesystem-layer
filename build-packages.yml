@@ -51,4 +51,4 @@
     - name: Make package metadata file
       template:
         src: client_packages_metadata.j2
-        dest: client_packages_metadata.yaml
+        dest: "{{ package_source_dir }}/client_packages_metadata.yaml"
