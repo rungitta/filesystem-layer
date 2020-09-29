@@ -5,7 +5,7 @@ meta:
 files:
 {% for file in pkg_files.files %}
   "{{ file.path | regex_replace(package_source_dir) }}":
-    file: "{{ file.path | regex_replace(package_source_dir + '/') }}"
+    file: "{{ file.path | regex_replace(package_source_dir + '/package/') }}"
     #mode: "0755"
     user: "root"
 {% endfor %}
