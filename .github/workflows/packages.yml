@@ -21,7 +21,10 @@ jobs:
 
       - name: Get the version number for the packages
         id: get_version
-        run: env TAG_NAME=${{ github.event.release.tag_name }/v/} echo ::set-output name=version::${TAG_NAME:-0.0}
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          VERSION=${TAG_NAME/v/}
+          echo ::set-output name=version::${VERSION:-0.0}
 
       - name: Prepare package source
         uses: roles-ansible/check-ansible-debian-stretch-action@master
