@@ -50,11 +50,20 @@ jobs:
         format: deb
         package: client_packages_metadata.yaml
 
+    - name: Debug
+      run: echo ${{ steps.build-deb.outputs.package }}
+
+    - name: Debug
+      run: ls -l
+
+    - name: Debug
+      run: ls -l ${{ steps.build-deb.outputs.package }}
+
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: Deb package
-        path: ${{ steps.build-deb.output.package }}
+        path: ${{ steps.build-deb.outputs.package }}
         #path: ${{ github.workspace }}/build/*.deb
         #path: "*.deb"
 
@@ -62,5 +71,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: RPM package
-        path: ${{ steps.build-rpm.output.package }}
+        path: ${{ steps.build-rpm.outputs.package }}
         #path: ${{ github.workspace }}/build/noarch/*.rpm
