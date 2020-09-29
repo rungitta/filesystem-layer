@@ -34,7 +34,7 @@ jobs:
         version: 0.1
         arch: x86_64
         format: rpm
-        package: package.yaml
+        package: "{{ github_workspace }}/package/client_packages_metadata.yaml"
 
     - name: Build DEB package
       uses: kentik/pkg@v1.0.0-rc6
