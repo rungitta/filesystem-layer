@@ -28,7 +28,7 @@ jobs:
         hosts: "localhost"
 
     - name: Build RPM package
-    - uses: kentik/pkg@v1
+      uses: kentik/pkg@v1
       with:
         name: cvmfs-config-eessi
         version: 0.1
@@ -37,7 +37,7 @@ jobs:
         package: package.yaml
 
     - name Build DEB package
-    - uses: kentik/pkg@v1
+      uses: kentik/pkg@v1
       with:
         name: cvmfs-config-eessi
         version: 0.1
