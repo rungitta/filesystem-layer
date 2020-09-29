@@ -39,7 +39,7 @@ jobs:
         id: build-rpm
         uses: bpicode/github-action-fpm@master
         with:
-          fpm_args: "${{ package_source_dir }}"
+          fpm_args: "./package/"
           fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t rpm -s dir"
 
         #uses: kentik/pkg@v1.0.0-rc6
