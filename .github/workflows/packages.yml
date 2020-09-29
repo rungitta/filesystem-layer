@@ -1,8 +1,6 @@
 name: Build client packages
 
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the master branch
   push:
     branches:
       - master
@@ -11,18 +9,19 @@ on:
     branches:
       - master
       - build_packages
+  tags:
+    - 'v*'
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-      # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v2
 
       - name: Get the version number for the packages
         id: get_version
-        run: env TAG_NAME=${{ github.event.release.tag_name }} echo ::set-output name=version::${TAG_NAME:-0.0}
+        run: env TAG_NAME=${{ github.event.release.tag_name }} echo ::set-output name=version::${TAG_NAME/v/:-0.0}
 
       - name: Prepare package source
         uses: roles-ansible/check-ansible-debian-stretch-action@master
@@ -98,7 +97,6 @@ jobs:
           prerelease: false
 
       - name: Upload RPM as Release Asset
-        #id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,13 +107,11 @@ jobs:
           asset_content_type: application/x-rpm
 
       - name: Upload DEB as Release Asset
-        #id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ${{ steps.find_filenames.outputs.debfile }}
-          #${{ steps.build-deb.outputs.package }}
           #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
           asset_content_type: application/x-debian-package
