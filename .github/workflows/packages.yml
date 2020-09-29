@@ -36,7 +36,7 @@ jobs:
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
-        version: get_version.outputs.version
+        version: ${{ steps.get_version.outputs.version }}
         arch: x86_64
         format: rpm
         package: package/client_packages_metadata.yaml
@@ -46,7 +46,7 @@ jobs:
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
-        version: get_version.outputs.version
+        version: ${{ steps.get_version.outputs.version }}
         arch: x86_64
         format: deb
         package: package/client_packages_metadata.yaml
