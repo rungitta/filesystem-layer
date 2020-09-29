@@ -43,7 +43,7 @@ jobs:
         version: 0.1
         arch: x86_64
         format: rpm
-        package: /home/runner/work/filesystem-layer/filesystem-layer/package/client_packages_metadata.yaml
+        package: /github/workspace/package/client_packages_metadata.yaml
 
     - name: Build DEB package
       uses: kentik/pkg@v1.0.0-rc6
