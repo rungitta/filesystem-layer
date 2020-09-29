@@ -27,7 +27,7 @@ jobs:
         targets: "./build-packages.yml"
         hosts: "localhost"
 
-    - name Build RPM package
+    - name: Build RPM package
     - uses: kentik/pkg@v1
       with:
         name: cvmfs-config-eessi
