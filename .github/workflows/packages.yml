@@ -19,21 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: debug
-        run: |
-          echo ${{ github.ref }}
-          echo ${{ github.event.release.tag_name }}
-          echo ${GITHUB_REF}
-
-      #${GITHUB_REF/refs\/tags\/v/}
-
       - name: Get the version number for the packages
         id: get_version
         run: |
-          TAG_NAME=${{ github.event.release.tag_name }}
-          VERSION=${TAG_NAME/v/}
-          echo "Tag ${TAG_NAME} and version ${VERSION}"
-          echo ::set-output name=version::${VERSION:-0.0}
+          VERSION=0.0
+          REF_NAME=${{ github.ref }}
+          [[ $REF_NAME == refs/tags/v* ]] && VERSION=${REF_NAME/refs\/tags\/v/}
+          echo ::set-output name=version::${VERSION}
 
       - name: Prepare package source
         uses: roles-ansible/check-ansible-debian-stretch-action@master
