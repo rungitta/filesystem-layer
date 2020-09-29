@@ -25,6 +25,24 @@ jobs:
         targets: "./build-packages.yml"
         hosts: "localhost"
 
+    - name Build RPM package
+    - uses: kentik/pkg@v1
+      with:
+        name: cvmfs-config-eessi
+        version: 0.1
+        arch: x86_64
+        format: rpm
+        package: package.yaml
+
+    - name Build DEB package
+    - uses: kentik/pkg@v1
+      with:
+        name: cvmfs-config-eessi
+        version: 0.1
+        arch: x86_64
+        format: deb
+        package: package.yaml
+
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2
       with:
