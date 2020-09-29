@@ -21,7 +21,7 @@ jobs:
     # Important: This sets up your GITHUB_WORKSPACE environment variable
     - uses: actions/checkout@v2
 
-    - name: ansible check with debian:stretch
+    - name: Prepare package source
       uses: roles-ansible/check-ansible-debian-stretch-action@master
       with:
         targets: "./build-packages.yml"
@@ -43,7 +43,7 @@ jobs:
         version: 0.1
         arch: x86_64
         format: deb
-        package: package.yaml
+        package: "{{ github_workspace }}/package.yaml"
 
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2
