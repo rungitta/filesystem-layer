@@ -40,8 +40,8 @@ jobs:
         uses: bpicode/github-action-fpm@master
         #uses: ./.github/actions/fpm
         with:
-          fpm_args: "./package/"
-          fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t rpm -a all -s dir"
+          fpm_args: "etc"
+          fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t rpm -a all -s dir -C ./package"
 
         #uses: kentik/pkg@v1.0.0-rc6
         #with:
@@ -56,8 +56,8 @@ jobs:
         uses: bpicode/github-action-fpm@master
         #uses: ./.github/actions/fpm
         with:
-          fpm_args: "./package/"
-          fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t deb -a all -s dir"
+          fpm_args: "etc"
+          fpm_opts: "--debug -n cvmfs-config-esssi -v ${{ steps.get_version.outputs.version }} -t deb -a all -s dir -C ./package"
 
         #uses: kentik/pkg@v1.0.0-rc6
         #with:

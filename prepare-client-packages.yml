@@ -40,15 +40,3 @@
           CVMFS_CONFIG_REPOSITORY="{{ eessi_cvmfs_config_repo.repository.repository }}"
           CVMFS_DEFAULT_DOMAIN="{{ eessi_cvmfs_config_repo.domain }}"
         dest: "{{ package_source_dir }}/etc/cvmfs/default.d/80-eessi-cvmfs.conf"
-
-    - name: Register all files to be included in the package
-      find:
-        paths: "{{ package_source_dir }}/"
-        recurse: yes
-        file_type: file
-      register: pkg_files
-
-    - name: Make package metadata file
-      template:
-        src: client_packages_metadata.j2
-        dest: "{{ package_source_dir }}/client_packages_metadata.yaml"
