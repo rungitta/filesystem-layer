@@ -13,91 +13,100 @@ on:
       - build_packages
 
 jobs:
+
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    # Important: This sets up your GITHUB_WORKSPACE environment variable
-    - uses: actions/checkout@v2
+      # Important: This sets up your GITHUB_WORKSPACE environment variable
+      - uses: actions/checkout@v2
 
-    - name: Get the version number for the packages
-      id: get_version
-      run: env TAG_NAME=${{ github.event.release.tag_name }} echo ::set-output name=version::${TAG_NAME:-0.0}
+      - name: Get the version number for the packages
+        id: get_version
+        run: env TAG_NAME=${{ github.event.release.tag_name }} echo ::set-output name=version::${TAG_NAME:-0.0}
 
-    - name: Prepare package source
-      uses: roles-ansible/check-ansible-debian-stretch-action@master
-      with:
-        targets: "./build-packages.yml"
-        hosts: "localhost"
+      - name: Prepare package source
+        uses: roles-ansible/check-ansible-debian-stretch-action@master
+        with:
+          targets: "./build-packages.yml"
+          hosts: "localhost"
 
-    - name: Build RPM package
-      id: build-rpm
-      uses: kentik/pkg@v1.0.0-rc6
-      with:
-        name: cvmfs-config-eessi
-        version: ${{ steps.get_version.outputs.version }}
-        arch: x86_64
-        format: rpm
-        package: package/client_packages_metadata.yaml
+      - name: Build RPM package
+        id: build-rpm
+        uses: kentik/pkg@v1.0.0-rc6
+        with:
+          name: cvmfs-config-eessi
+          version: ${{ steps.get_version.outputs.version }}
+          arch: x86_64
+          format: rpm
+          package: package/client_packages_metadata.yaml
 
-    - name: Build DEB package
-      id: build-deb
-      uses: kentik/pkg@v1.0.0-rc6
-      with:
-        name: cvmfs-config-eessi
-        version: ${{ steps.get_version.outputs.version }}
-        arch: x86_64
-        format: deb
-        package: package/client_packages_metadata.yaml
+      - name: Build DEB package
+        id: build-deb
+        uses: kentik/pkg@v1.0.0-rc6
+        with:
+          name: cvmfs-config-eessi
+          version: ${{ steps.get_version.outputs.version }}
+          arch: x86_64
+          format: deb
+          package: package/client_packages_metadata.yaml
 
-    - name: upload deb package as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Deb package
-        path: ${{ steps.build-deb.outputs.package }}
+      - name: upload deb package as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Deb package
+          path: ${{ steps.build-deb.outputs.package }}
 
-    - name: upload rpm package as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: RPM package
-        path: ${{ steps.build-rpm.outputs.package }}
+      - name: upload rpm package as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: RPM package
+          path: ${{ steps.build-rpm.outputs.package }}
 
   release:
     needs: build
-    if: ${{ build.steps.get_version.outputs.version != '0.0' }}
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
-
     steps:
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - name: Download DEB package
+        uses: actions/download-artifact@v2
+        with:
+          name: Deb package
 
-    - name: Upload RPM as Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ${{ steps.build-rpm.outputs.package }}
-        #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
-        asset_content_type: application/x-rpm
+      - name: Download RPM package
+        uses: actions/download-artifact@v2
+        with:
+          name: RPM package
 
-    - name: Upload DEB as Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ${{ steps.build-deb.outputs.package }}
-        #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
-        asset_content_type: application/x-rpm
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload RPM as Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: *.rpm
+          #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
+          asset_content_type: application/x-rpm
+
+      - name: Upload DEB as Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: *.deb
+          #${{ steps.build-deb.outputs.package }}
+          #asset_name: ${{ steps.check_rpm.outputs.RPMFILE }}
+          asset_content_type: application/x-debian-package
