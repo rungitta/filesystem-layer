@@ -31,6 +31,7 @@ jobs:
       run: ls -lR ${{ github.workspace }}
 
     - name: Build RPM package
+      id: build-rpm
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
@@ -40,6 +41,7 @@ jobs:
         package: client_packages_metadata.yaml
 
     - name: Build DEB package
+      id: build-deb
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
@@ -52,11 +54,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Deb package
+        path: ${{ steps.build-deb.output.package }}
         #path: ${{ github.workspace }}/build/*.deb
-        path: "*.deb"
+        #path: "*.deb"
 
     - name: upload rpm package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: RPM package
-        path: ${{ github.workspace }}/build/noarch/*.rpm
+        path: ${{ steps.build-rpm.output.package }}
+        #path: ${{ github.workspace }}/build/noarch/*.rpm
