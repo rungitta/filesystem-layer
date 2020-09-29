@@ -1,4 +1,4 @@
-name: Build packages
+name: Build client packages
 
 on:
   # Trigger the workflow on push or pull request,
@@ -21,21 +21,22 @@ jobs:
     # Important: This sets up your GITHUB_WORKSPACE environment variable
     - uses: actions/checkout@v2
 
+    - name: Get the version number for the packages
+      id: get_version
+      run: env TAG_NAME=${{ github.event.release.tag_name }} echo ::set-output name=version::${TAG_NAME:-0.0}
+
     - name: Prepare package source
       uses: roles-ansible/check-ansible-debian-stretch-action@master
       with:
         targets: "./build-packages.yml"
         hosts: "localhost"
 
-    - name: Debug
-      run: ls -lR ${{ github.workspace }}
-
     - name: Build RPM package
       id: build-rpm
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
-        version: 0.1
+        version: get_version.outputs.version
         arch: x86_64
         format: rpm
         package: package/client_packages_metadata.yaml
@@ -45,31 +46,19 @@ jobs:
       uses: kentik/pkg@v1.0.0-rc6
       with:
         name: cvmfs-config-eessi
-        version: 0.1
+        version: get_version.outputs.version
         arch: x86_64
         format: deb
         package: package/client_packages_metadata.yaml
-
-    - name: Debug
-      run: echo ${{ steps.build-deb.outputs.package }}
-
-    - name: Debug
-      run: ls -l
-
-    - name: Debug
-      run: ls -l ${{ steps.build-deb.outputs.package }}
 
     - name: upload deb package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: Deb package
         path: ${{ steps.build-deb.outputs.package }}
-        #path: ${{ github.workspace }}/build/*.deb
-        #path: "*.deb"
 
     - name: upload rpm package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: RPM package
         path: ${{ steps.build-rpm.outputs.package }}
-        #path: ${{ github.workspace }}/build/noarch/*.rpm
