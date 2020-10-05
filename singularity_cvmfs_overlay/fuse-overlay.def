@@ -9,18 +9,16 @@ From: debian:10
     dpkg -i cvmfs-release-latest_all.deb
     rm -f cvmfs-release-latest_all.deb
     apt-get update -y
-    apt-get install -y cvmfs cvmfs-config-default cvmfs-fuse3    
-    dpkg -i /root/cvmfs-config-eessi-0.1-all.deb
+    apt-get install -y cvmfs cvmfs-config-default cvmfs-fuse3
+    wget https://github.com/EESSI/filesystem-layer/releases/download/v0.2.0/cvmfs-config-esssi_0.2.0_all.deb
+    dpkg -i cvmfs-config-esssi_0.2.0_all.deb
+    rm -f cvmfs-config-esssi_0.2.0_all.deb
     apt-get install -y fuse-overlayfs
 
     cat << EOF > /etc/cvmfs/default.local
 CVMFS_QUOTA_LIMIT=10000
 CVMFS_HTTP_PROXY="DIRECT"
 EOF
-#    mkdir -p /cvmfs/pilot.eessi-hpc.org
 
 %environment
     export LC_ALL=C
-
-%files
-    cvmfs-config-eessi-0.1-all.deb /root
